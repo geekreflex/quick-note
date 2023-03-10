@@ -1,6 +1,18 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { auth } from '../../config/firebase';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithPopup, User } from 'firebase/auth';
+
+interface AuthState {
+  user: null | User;
+  status: 'idle' | 'pending' | 'fulfilled' | 'rejected';
+  error: null | string;
+}
+
+const initialState: AuthState = {
+  user: null,
+  status: 'idle',
+  error: null,
+};
 
 export const signInWithGoogle = createAsyncThunk(
   'auth/signInWithGoogle',
@@ -8,27 +20,37 @@ export const signInWithGoogle = createAsyncThunk(
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
-      console.log(result.user);
-      // return result.user;
+      console.log(result);
+      return result.user;
     } catch (error: any) {
       return rejectWithValue(error.message);
     }
   }
 );
 
-interface initialStateProps {
-  status: 'failed' | 'loading' | 'pending' | 'success' | 'idle';
-}
-
-const initialState: initialStateProps = {
-  status: 'idle',
-};
-
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {},
-  extraReducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(signInWithGoogle.pending, (state) => {
+      state.status = 'pending';
+    });
+    builder.addCase(
+      signInWithGoogle.fulfilled,
+      (state, action: PayloadAction<User>) => {
+        state.status = 'fulfilled';
+        state.user = action.payload;
+      }
+    );
+    builder.addCase(
+      signInWithGoogle.rejected,
+      (state, action: PayloadAction<any>) => {
+        state.status = 'rejected';
+        state.error = action.payload;
+      }
+    );
+  },
 });
 
 export default authSlice.reducer;

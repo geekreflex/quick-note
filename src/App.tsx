@@ -1,13 +1,9 @@
-import { useAppDispatch } from './app/hooks';
-import { signInWithGoogle } from './features/auth/authSlice';
+import GoogleButton from './components/GoogleButton';
 
 function App() {
-  const dispatch = useAppDispatch();
   return (
     <div className="App">
-      <button onClick={() => dispatch(signInWithGoogle())}>
-        Signin with Gooogle
-      </button>
+      <GoogleButton />
       <h1>Hello</h1>
     </div>
   );
