@@ -1,9 +1,17 @@
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from './app/hooks';
+import { setUserLoggedIn } from './features/auth/authSlice';
+import { Routes, Route } from 'react-router-dom';
+
 import GoogleButton from './components/GoogleButton';
 import LogoutButton from './components/LogoutButton';
-import { setUserLoggedIn } from './features/auth/authSlice';
+
+// pages
+import Auth from './pages/Auth';
+import Note from './pages/Note';
+import Home from './pages/Home';
+import { ProtectedRoute, PublicRoute } from './routes';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -31,9 +39,29 @@ function App() {
 
   return (
     <div className="App">
-      <GoogleButton />
-      <LogoutButton />
-      <h1>Hello</h1>
+      {isLoggedIn}
+      <div>
+        <Routes>
+          {/* <Route path="/" element={isLoggedIn ? <Note /> : <Home />} /> */}
+          <Route path="/" element={<Home />} />
+          <Route
+            path="note"
+            element={
+              <ProtectedRoute isLoggedIn={isLoggedIn}>
+                <Note />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="enter"
+            element={
+              <PublicRoute isLoggedIn={isLoggedIn}>
+                <Auth />
+              </PublicRoute>
+            }
+          />
+        </Routes>
+      </div>
     </div>
   );
 }
