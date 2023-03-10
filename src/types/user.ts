@@ -1,11 +1,8 @@
-import { User } from '@firebase/auth';
-
-const userToJson = (user: User) => {
-  const { uid, email, displayName, photoURL } = user;
-  return {
-    uid,
-    email,
-    displayName,
-    photoURL,
-  };
-};
+export interface Note {
+  id?: string;
+  title: string;
+  content: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  userId?: string;
+}

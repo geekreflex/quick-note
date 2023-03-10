@@ -4,9 +4,6 @@ import { useAppDispatch, useAppSelector } from './app/hooks';
 import { setUserLoggedIn } from './features/auth/authSlice';
 import { Routes, Route } from 'react-router-dom';
 
-import GoogleButton from './components/GoogleButton';
-import LogoutButton from './components/LogoutButton';
-
 // pages
 import Auth from './pages/Auth';
 import Note from './pages/Note';
@@ -35,7 +32,7 @@ function App() {
     });
 
     return () => unsubscribe();
-  }, [dispatch]);
+  }, [dispatch, auth]);
 
   return (
     <div className="App">
